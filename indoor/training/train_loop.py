@@ -4,6 +4,8 @@ import torch
 from tqdm import tqdm
 from torchmetrics.detection.mean_ap import MeanAveragePrecision
 
+from indoor.config import label_mapping
+
 
 def train(net, train_loader, optimizer, device, logger, epoch, args):
 
@@ -28,7 +30,7 @@ best_metric = -1
 
 def eval(net, val_loader, lr_scheduler, model_path, device, logger, epoch):
     global best_metric
-    metric = MeanAveragePrecision()
+    metric = MeanAveragePrecision(class_metrics=True)
     net.eval()
     with torch.no_grad():
         for i, data in tqdm(enumerate(val_loader), total=len(val_loader)):
@@ -40,7 +42,12 @@ def eval(net, val_loader, lr_scheduler, model_path, device, logger, epoch):
         metrics = metric.compute()
 
         for key, value in metrics.items():
-            logger.report_scalar("mAP", key, iteration=epoch, value=value)
+            try:
+                logger.report_scalar("mAP", key, iteration=epoch, value=value)
+            except Exception as _:
+                # more than one metric
+                for idx, metric in enumerate(value):
+                    logger.report_scalar(key, list(label_mapping.keys())[idx], iteration=epoch, value=metric)
 
         map_50 = metrics["map_50"]
         reduced_lr = lr_scheduler.step(map_50)
