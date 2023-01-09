@@ -1,0 +1,8 @@
+jupyter
+tqdm
+torchvision==0.14.1
+matplotlib==3.6.2
+pandas==1.5.2
+pytorch-metric-learning==1.6.3
+torchmetrics==0.11.0
+albumentations==1.3.0
