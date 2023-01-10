@@ -57,7 +57,7 @@ def create_loaders(args):
             p=0.1,
         ),
         A.OpticalDistortion(interpolation=cv2.INTER_CUBIC, border_mode=cv2.BORDER_CONSTANT, value=0, p=0.1),
-    ], bbox_params=A.BboxParams(format='pascal_voc', min_visibility=0.8, label_fields=["labels"]))
+    ], bbox_params=A.BboxParams(format='pascal_voc', min_visibility=0.2, label_fields=["labels"]))
 
     train_dataset = IndoorDataset(args.train_file, transform)
     val_dataset = IndoorDataset(args.val_file)
@@ -68,7 +68,8 @@ def create_loaders(args):
         worker_init_fn=seed_worker,
         batch_size=args.batch_size,
         shuffle=True,
-        collate_fn=collate
+        collate_fn=collate,
+        drop_last=True
     )
 
     val_loader = DataLoader(
@@ -77,7 +78,8 @@ def create_loaders(args):
         batch_size=args.batch_size,
         worker_init_fn=seed_worker,
         shuffle=False,
-        collate_fn=collate
+        collate_fn=collate,
+        drop_last=True
     )
 
     return train_loader, val_loader
