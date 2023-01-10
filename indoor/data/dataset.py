@@ -9,8 +9,9 @@ from indoor.config import label_mapping
 
 
 class IndoorDataset(Dataset):
-    def __init__(self, split):
+    def __init__(self, split, transform=None):
         self.split = pd.read_csv(split)
+        self.transform = transform
 
     def __getitem__(self, idx):
 
@@ -43,6 +44,13 @@ class IndoorDataset(Dataset):
             area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
             iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
             labels = torch.as_tensor(labels, dtype=torch.int64)
+
+            if self.transform is not None:
+                transformed = self.transform(image=image, bboxes=boxes, labels=labels)
+                image = transformed['image']
+                boxes = transformed['bboxes']
+                labels = transformed["labels"]
+
             target = {"boxes": boxes, "labels": labels, "area": area, "iscrowd": iscrowd}
 
         return image, target
