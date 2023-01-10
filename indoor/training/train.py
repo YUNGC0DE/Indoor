@@ -50,7 +50,7 @@ def create_parser():
     parser.add_argument("--num_workers", type=int, default=1, help="num workers for data loader")
     parser.add_argument("--epochs", type=int, default=300, help="number of epochs")
     parser.add_argument("--log_freq", type=int, default=50, help="frequency of logging training loss")
-    parser.add_argument("--lr", type=float, default=0.001, help="optimizer learning rate")
+    parser.add_argument("--lr", type=float, default=0.0005, help="optimizer learning rate")
     parser.add_argument("--weight_decay", type=float, default=0.0, help="L2 regularization")
     parser.add_argument("--momentum", type=float, default=0.9, help="momentum for SGD optimizer")
     parser.add_argument(

@@ -17,8 +17,7 @@ class IndoorDataset(Dataset):
 
         row = self.split.iloc[idx]
         image_path = row["image"]
-        image = torch.tensor(cv2.imread(image_path)) / 255
-        image = image.permute(2, 0, 1)
+        image = cv2.imread(image_path)
 
         annotation_path = row["annotation"]
         with open(annotation_path, 'r') as ann_bin:
@@ -40,18 +39,24 @@ class IndoorDataset(Dataset):
                 boxes.append(box)
                 labels.append(label_mapping[label])
 
+            if self.transform is not None:
+                try:
+                    transformed = self.transform(image=image, bboxes=boxes, labels=labels)
+                    image = transformed['image']
+                    boxes = transformed['bboxes']
+                    labels = transformed["labels"]
+                except ValueError as _:
+                    print("Skipping augmentation")
+
             boxes = torch.as_tensor(boxes, dtype=torch.float32)
             area = (boxes[:, 3] - boxes[:, 1]) * (boxes[:, 2] - boxes[:, 0])
             iscrowd = torch.zeros((boxes.shape[0],), dtype=torch.int64)
             labels = torch.as_tensor(labels, dtype=torch.int64)
 
-            if self.transform is not None:
-                transformed = self.transform(image=image, bboxes=boxes, labels=labels)
-                image = transformed['image']
-                boxes = transformed['bboxes']
-                labels = transformed["labels"]
-
             target = {"boxes": boxes, "labels": labels, "area": area, "iscrowd": iscrowd}
+
+        image = torch.tensor(image) / 255
+        image = image.permute(2, 0, 1)
 
         return image, target
 
