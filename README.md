@@ -12,6 +12,18 @@ Code for the last part is stored in <em>indoor</em> folder
 
 <hr>
 
+### Code Running
+
+* Recreate train/val split using notebooks
+* Install egg <code>pip3 install -e .</code> 
+* Install dependencies <code>pip3 install -r requirements.txt</code> 
+
+**Trainig**: <code>python3 indoor/training/train.py --kwargs... </code> <br>
+**Visualization**: <code>python3 indoor/project_utils/visualize.py --kwargs...</code>
+
+Trained model is available at <a href="https://drive.google.com/file/d/1Y52es5zaOH2LLyA5iJWqPH1eaKb8Tid6/view?usp=sharing">Google Drive</a>
+<hr>
+
 ### List of functionality
 **Implemented**<br>
 <input type="checkbox" name="vehicle1" checked=1 disabled=1> Model Training<br>
