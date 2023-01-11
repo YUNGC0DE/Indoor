@@ -16,3 +16,5 @@ label_mapping = {'fireextinguisher': 1,
                  'trashbin': 5,
                  'screen': 6,
                  'printer': 7}
+
+id_mapping = {v: k for k, v in label_mapping.items()}
